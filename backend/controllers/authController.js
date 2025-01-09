@@ -10,24 +10,32 @@ export const signup = async (req, res) => {
     return res.status(400).json({ error: true, message: "All fields are required" });
   }
 
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return res.status(400).json({ error: true, message: "User already exists" });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ username, email, password: hashedPassword });
-
   try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: true, message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
-    return res.status(201).json({
-      user: { username: newUser.username, email: newUser.email },
-      message: "Registration successful",
-    });
+
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const { password: pass, ...rest } = newUser._doc;
+
+    res
+      .cookie('access_token', token, { httpOnly: true })
+      .status(201)
+      .json({
+        user: rest,
+        accessToken: token,
+        message: "Registration successful",
+      });
   } catch (error) {
-    return res.status(400).json({ error: true, message: "An error occurred during registration" });
+    return res.status(500).json({ error: true, message: "An error occurred during registration" });
   }
 };
+
 
 // signin 
 
