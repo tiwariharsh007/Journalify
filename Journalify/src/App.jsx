@@ -4,13 +4,21 @@ import './App.css'
 import Login from './pages/Auth/Login';
 import Home from './pages/Home/Home';
 import SignUp from './pages/Auth/SignUp';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return(
   <BrowserRouter>
     <Routes>
-      <Route path="/dashboard" element={<Home/>}/>
       <Route path="/login" element={<Login/>}/>
+      <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
       <Route path="/signup" element={<SignUp/>}/>
     </Routes>
   </BrowserRouter>)

@@ -32,17 +32,23 @@ const Login = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          withCredentials: true, // Ensure cookies are sent
+          withCredentials: true,
         }
       );
-
+      console.log("Response Data:", response.data);
       if (response.data && response.data.accessToken) {
         localStorage.setItem("token", response.data.accessToken);
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error("Login failed:", error);
-      setError("Login failed. Please try again.");
+      if(error.response &&
+        error.response.data &&
+        error.response.data.message
+      ){
+        setError(error.response.data.message);
+      }else{
+        setError("Login failed. Please try again.");
+      }
     }
   };
 

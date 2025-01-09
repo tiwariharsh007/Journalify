@@ -54,16 +54,18 @@ export const signin = async (req, res) => {
     const { password: pass, ...rest } = validUser._doc;
 
     res
-      .cookie('access_token', token, { httpOnly: true })
+      .cookie('access_token', token, { httpOnly: true }) // Secure cookie
       .status(200)
       .json({
         user: rest,
+        accessToken: token, // Include token in response body
         message: "Logged in successfully",
       });
   } catch (error) {
     return res.status(500).json({ error: true, message: "An error occurred during logging-in." });
   }
 };
+
 
 // sign-out 
 export const signout = (req, res, next) => {
