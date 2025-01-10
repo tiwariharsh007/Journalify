@@ -1,22 +1,21 @@
 import { Journal } from "../models/journalSchema.js";
 import { errorHandler } from '../utils/error.js';
-import { upload } from '../utils/multer.js';
 
 // journal banane ke liye
 export const createJournal = async (req, res, next) => {
-  const { title, story, visitedLocation, visitedDate ,imageUrl} = req.body;
+  const { title, story, visitedLocation, visitedDate, imageUrl} = req.body;
 
   try {
-    // if (!req.file) {
-    //   return res.status(400).json({ error: true, message: "No file uploaded" });
+    // if (!req.imgUrl) {
+    //   return res.status(400).json({ error: true, message: "No image URL found" });
     // }
 
-    // const imageUrl = `/uploads/${req.file.filename}`;
+    // const imageUrl = req.imgUrl;
     // if(imageUrl)return res.json(imageUrl);
 
-    // if (!title || !story || !visitedLocation || !imageUrl || !visitedDate) {
-    //   return res.status(400).json({ error: true, message: "All fields are required" });
-    // }
+    if (!title || !story || !visitedLocation || !imageUrl || !visitedDate) {
+      return res.status(400).json({ error: true, message: "All fields are required" });
+    }
     
     const parsedVisitedDate = new Date(parseInt(visitedDate));
     const journal = await Journal.create({

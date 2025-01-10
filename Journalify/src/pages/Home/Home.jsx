@@ -4,11 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_API } from '../../utils/constants';
 import JournalCard from '../../components/Cards/JournalCard';
+import { MdAdd } from "react-icons/md";
+import Modal from "react-modal";
+import AddEditJournal from './AddEditJournal';
 
 const Home = () => {
   const navigate = useNavigate();
   const [ userInfo, steUserInfo] = useState(null);
   const [allJournals, setAllJournals] = useState([]);
+
+  const [openEditModal, setOpenEditModal] = useState({
+    isShown : false,
+    type: "add",
+    data: null,
+  });
 
   const getUserInfo = async() => {
     try{
@@ -83,6 +92,7 @@ const Home = () => {
   },[])
 
   return (
+    <>
     <div>
       <Navbar userInfo={userInfo} />
 
@@ -120,6 +130,40 @@ const Home = () => {
       </div>
 
     </div>
+
+    <Modal
+      isOpen={openEditModal.isShown}
+      onRequestClose={() => openEditModal.setShown(false)}
+      style={{
+        overlay: {
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+          zIndex: 999,
+        },
+      }}
+      appElement={document.getElementById("root")}
+      className="model-box"
+    >
+      <AddEditJournal 
+      type={openEditModal.type}
+      journalInfo={openEditModal.data}
+      onClose={() => {
+        setOpenEditModal({isShown: false, type: "add", data: null});
+      }}
+      getAllJournals={getAllJournals}
+      />
+    </Modal>
+
+    <button className="w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10"
+    onClick={() => {
+      setOpenEditModal({
+        isShown: true,
+        type: "add",
+        data: null
+      });
+    }}>
+      <MdAdd className="text-[32px] text-white " />
+    </button>
+    </>
   )
 }
 

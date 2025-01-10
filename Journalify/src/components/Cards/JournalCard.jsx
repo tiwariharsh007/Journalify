@@ -28,7 +28,7 @@ const JournalCard = ({
             <div className="flex-1">
               <h6 className="text-sm font-medium">{title}</h6>
               <span className="text-xs text-slate-500">
-                {date ? moment(date).format("DD MM YYYY") : "Date not available"}
+                {date ? moment(date).format("Do MMM YYYY") : "Date not available"}
               </span>
             </div>
           </div>
