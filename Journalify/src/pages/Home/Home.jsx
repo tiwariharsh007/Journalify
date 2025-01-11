@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_API } from '../../utils/constants';
 import JournalCard from '../../components/Cards/JournalCard';
 import { MdAdd } from "react-icons/md";
 import Modal from "react-modal";
 import AddEditJournal from './AddEditJournal';
+import ViewJournal from './ViewJournal';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ const Home = () => {
     isShown : false,
     type: "add",
     data: null,
+  });
+
+  const [openViewModal, setOpenViewModal] = useState({
+    isShown : false,
+    data : null,
   });
 
   const getUserInfo = async() => {
@@ -58,9 +64,17 @@ const Home = () => {
     }
   }
 
-  const handleEdit = (data) => {}
+  const handleEdit = (data) => {
+    setOpenEditModal({isShown: true, type: "edit", data: data}); 
+  }
 
-  const handleViewJournal = (data) => {}
+  const handleViewJournal = (item) => {
+    setOpenViewModal({ isShown: true, data: item });
+  };
+  
+  useEffect(() => {
+    console.log("Updated openEditModal:", openEditModal);
+  }, [openEditModal]);
 
   const updateIsFavourite = async (journalData) => {
     const journalId = journalData._id;
@@ -143,13 +157,38 @@ const Home = () => {
       appElement={document.getElementById("root")}
       className="model-box"
     >
-      <AddEditJournal 
+      <AddEditJournal
       type={openEditModal.type}
       journalInfo={openEditModal.data}
       onClose={() => {
         setOpenEditModal({isShown: false, type: "add", data: null});
       }}
       getAllJournals={getAllJournals}
+      />
+    </Modal>
+
+    <Modal
+      isOpen={openViewModal.isShown}
+      onRequestClose={() => {}}
+      style={{
+        overlay: {
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+          zIndex: 999,
+        },
+      }}
+      appElement={document.getElementById("root")}
+      className="model-box"
+    >
+      <ViewJournal
+      storyInfo={openViewModal.data || null}
+      onClose={() => {
+        setOpenViewModal((prev) => ({ ...prev, isShown: false}))
+      }}
+      onEditClick={() => {
+        setOpenViewModal((prev) => ({ ...prev, isShown: false}));
+        handleEdit(openViewModal.data || null)
+      }}
+      onDeleteClick={() => {}}
       />
     </Modal>
 

@@ -62,11 +62,11 @@ export const signin = async (req, res) => {
     const { password: pass, ...rest } = validUser._doc;
 
     res
-      .cookie('access_token', token, { httpOnly: true }) // Secure cookie
+      .cookie('access_token', token, { httpOnly: true })
       .status(200)
       .json({
         user: rest,
-        accessToken: token, // Include token in response body
+        accessToken: token,
         message: "Logged in successfully",
       });
   } catch (error) {
@@ -85,6 +85,7 @@ export const signout = (req, res, next) => {
     }
 }
 
+// current user ka sara data 
 export const getuser = async(req, res) => {
   try {
     const user = await User.findById(req.userRef.id).select('-password');

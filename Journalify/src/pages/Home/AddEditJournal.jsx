@@ -9,16 +9,16 @@ import moment from "moment";
 import uploadImage from "../../utils/UploadImage";
 
 const AddEditJournal = ({
-  storyInfo,
+  journalInfo,
   type,
   onClose,
   getAllJournals,
 }) => {
-  const [title, setTitle] = useState("");
-  const [storyImg, setStoryImg] = useState(null);
-  const [story, setStory] = useState("");
-  const [visitedLocation, setVisitedLocation] = useState([]);
-  const [visitedDate, setVisitedDate] = useState(moment().valueOf());
+  const [title, setTitle] = useState(journalInfo?.title || "");
+  const [storyImg, setStoryImg] = useState(journalInfo?.imageUrl || null);
+  const [story, setStory] = useState(journalInfo?.story || "");
+  const [visitedLocation, setVisitedLocation] = useState(journalInfo?.visitedLocation || []);
+  const [visitedDate, setVisitedDate] = useState(journalInfo?.visitedDate || null);
 
   const [error, setError] = useState("");
 
@@ -57,9 +57,39 @@ const AddEditJournal = ({
   };
   
 
-  const updateJournal = async( ) => {
-
-  }
+  const updateJournal = async () => {
+    try {
+      let updateData = {
+        title,
+        story,
+        imageUrl: journalInfo.imageUrl || "",
+        visitedLocation,
+        visitedDate: visitedDate ? moment(visitedDate).valueOf() : moment().valueOf(),
+      };
+  
+      if (typeof storyImg === "object") {
+        const imageUploadResponse = await uploadImage(storyImg);
+        const newImageUrl = imageUploadResponse?.imageUrl || "";
+        updateData.imageUrl = newImageUrl;
+      }
+  
+      const response = await axios.put(
+        `${BASE_API}/journal/update/${journalInfo._id}`,
+        updateData,
+        { withCredentials: true }
+      );
+  
+      if (response.data && response.data.story) {
+        console.log("Story updated successfully!");
+        getAllJournals();
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error in updateJournal:", error.response?.data || error.message);
+      setError(error.response?.data?.message || "Unexpected Error Occurred.");
+    }
+  };
+  
 
   const handleAddorUpdateClick = () => {
     console.log("Data",{title,story,storyImg,visitedDate,visitedLocation});
@@ -84,7 +114,7 @@ const AddEditJournal = ({
   }
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex items-center justify-between">
         <h5 className="text-xl font-medium text-slate-700">
           {type === "add" ? "Add Story" : "Update Story"}

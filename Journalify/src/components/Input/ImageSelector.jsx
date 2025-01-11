@@ -2,9 +2,9 @@ import React, { useRef, useState } from "react";
 import { FaRegFileImage } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 
-const ImageSelector = ({ image, setImage, handleDeleteImage}) => {
+const ImageSelector = ({image, setImage, handleDeleteImage}) => {
   const inputRef = useRef(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(image || null);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
