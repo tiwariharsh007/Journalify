@@ -109,9 +109,36 @@ const AddEditJournal = ({
     }
   };
 
-  const handleDeleteStoryImage = () => {
-
-  }
+  const handleDeleteStoryImage = async () => {
+    try {
+      const deleteImageResponse = await axios.delete(`${BASE_API}/journal/deleteImage`, {
+        params: {
+          imageUrl: journalInfo.imageUrl,
+        },
+      });
+  
+      if (deleteImageResponse.data) {
+        const journalId = journalInfo._id;
+  
+        const postData = {
+          title,
+          story,
+          visitedLocation,
+          visitedDate: moment().valueOf(),
+          imageUrl: "",
+        };
+  
+        const response = await axios.put(`${BASE_API}/journal/update/${journalId}`, postData);
+  
+        if (response.data) {
+          setStoryImg(null);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting story image:", error);
+    }
+  };
+  
 
   return (
     <div className="relative">

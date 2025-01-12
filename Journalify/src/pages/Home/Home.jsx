@@ -64,6 +64,23 @@ const Home = () => {
     }
   }
 
+  const deleteJournal = async (data) => {
+    const journalId = data._id;
+    try{
+      const response = await axios.delete(`${BASE_API}/journal/delete/${journalId}`, {
+        withCredentials: true
+    });
+    
+
+      if(response.data && !response.data.error) {
+        getAllJournals();
+        setOpenViewModal((prev) => ({ ...prev, isShown: false}))
+      }
+    } catch(error) {
+      console.log("Unexpexted error occured");
+    }
+  }
+
   const handleEdit = (data) => {
     setOpenEditModal({isShown: true, type: "edit", data: data}); 
   }
@@ -188,7 +205,9 @@ const Home = () => {
         setOpenViewModal((prev) => ({ ...prev, isShown: false}));
         handleEdit(openViewModal.data || null)
       }}
-      onDeleteClick={() => {}}
+      onDeleteClick={() => {
+        deleteJournal(openViewModal.data || null)
+      }}
       />
     </Modal>
 
