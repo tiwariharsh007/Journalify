@@ -8,11 +8,15 @@ import { MdAdd } from "react-icons/md";
 import Modal from "react-modal";
 import AddEditJournal from './AddEditJournal';
 import ViewJournal from './ViewJournal';
+import EmptyCard from '../../components/Cards/EmptyCard';
 
 const Home = () => {
   const navigate = useNavigate();
   const [ userInfo, steUserInfo] = useState(null);
   const [allJournals, setAllJournals] = useState([]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("");
 
   const [openEditModal, setOpenEditModal] = useState({
     isShown : false,
@@ -89,9 +93,30 @@ const Home = () => {
     setOpenViewModal({ isShown: true, data: item });
   };
   
-  useEffect(() => {
-    console.log("Updated openEditModal:", openEditModal);
-  }, [openEditModal]);
+  const onSearchJournal = async (query) => {
+    try {
+      const response = await axios.get(
+        `${BASE_API}/journal/search`,
+        {
+          params: { query },
+          withCredentials: true,
+        }
+      );
+  
+      if (response.data && response.data.journals) {
+        setFilterType("search");
+        setAllJournals(response.data.journals);
+      }
+    } catch (error) {
+      console.error("Unexpected error occurred:", error);
+    }
+  };
+  
+
+  const handleClearSearch = () => {
+    setFilterType("");
+    getAllJournals();
+  }
 
   const updateIsFavourite = async (journalData) => {
     const journalId = journalData._id;
@@ -125,7 +150,12 @@ const Home = () => {
   return (
     <>
     <div>
-      <Navbar userInfo={userInfo} />
+      <Navbar
+      userInfo={userInfo}
+      searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
+      onSearchNote={onSearchJournal} 
+      handleClearSearch={handleClearSearch}/>
 
       <div>
         <div className="container mx-auto py-10">
@@ -151,13 +181,17 @@ const Home = () => {
                   })
                   }
                 </div>
-              ):(<>Empty Card</>)
+              ):<EmptyCard message={`Nothing to show here. Start by adding some items!`}/>
               }
             </div>
           </div>
         </div>
 
-        <div className="w-[320px]"></div>
+        <div className="w-[320px]">
+          <div className="bg-white border border-slate-200 shadow-lg shadow-slate-200/60 rounded-lg">
+
+          </div>
+        </div>
       </div>
 
     </div>
