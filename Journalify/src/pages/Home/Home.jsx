@@ -9,6 +9,10 @@ import Modal from "react-modal";
 import AddEditJournal from './AddEditJournal';
 import ViewJournal from './ViewJournal';
 import EmptyCard from '../../components/Cards/EmptyCard';
+import { DayPicker } from 'react-day-picker';
+import moment from 'moment';
+import FilterIndoTitle from '../../components/Cards/FilterIndoTitle';
+import { getEmptyCardMessage } from '../../utils/helper';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -17,6 +21,8 @@ const Home = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("");
+
+  const [dateRange, setDateRange] = useState({from: null, to: null});
 
   const [openEditModal, setOpenEditModal] = useState({
     isShown : false,
@@ -112,7 +118,6 @@ const Home = () => {
     }
   };
   
-
   const handleClearSearch = () => {
     setFilterType("");
     getAllJournals();
@@ -135,12 +140,50 @@ const Home = () => {
       
       if (response.data && response.status === 200) {
         console.log('Updated:', response.data);
-        getAllJournals();
+        if(filterType==="search" && searchQuery) {
+          onSearchJournal(searchQuery);
+        } else if (filterType === "date") {
+          filterJournalsByDate(dateRange);
+        } else {
+          getAllJournals();
+        }
       }
     } catch (error) {
       console.log('Error occurred:', error.message);
     }
   };
+
+  const filterJournalsByDate = async (day) => {
+    try {
+      const startDate = day.from ? moment(day.from).valueOf() : null;
+      const endDate = day.to ? moment(day.to).valueOf() : null;
+  
+      if (startDate && endDate) {
+        const response = await axios.get(`${BASE_API}/journal/filter`, {
+          params: { startDate, endDate },
+          withCredentials: true,
+        });
+  
+        if (response.data && response.data.journals) {
+          setFilterType("date");
+          setAllJournals(response.data.journals);
+        }
+      }
+    } catch (error) {
+      console.error("Unexpected error occurred. Please try again.", error);
+    }
+  };
+
+  const handleDayClick = (day) => {
+    setDateRange(day);
+    filterJournalsByDate(day);
+  };
+
+  const resetFilter = () => {
+    setDateRange({from: null, to: null});
+    setFilterType("");
+    getAllJournals();
+  }
 
   useEffect( () => {
     getAllJournals();
@@ -149,7 +192,6 @@ const Home = () => {
 
   return (
     <>
-    <div>
       <Navbar
       userInfo={userInfo}
       searchQuery={searchQuery}
@@ -157,8 +199,17 @@ const Home = () => {
       onSearchNote={onSearchJournal} 
       handleClearSearch={handleClearSearch}/>
 
-      <div>
         <div className="container mx-auto py-10">
+
+          <FilterIndoTitle
+          filterType={filterType}
+          filterDate={dateRange}
+          onClear={() => {
+            resetFilter();
+          }}
+          />
+
+
           <div className="flex gap-7">
             <div className="flex-1">
               {allJournals.length > 0 ? (
@@ -181,19 +232,24 @@ const Home = () => {
                   })
                   }
                 </div>
-              ):<EmptyCard message={`Nothing to show here. Start by adding some items!`}/>
+              ):<EmptyCard message={getEmptyCardMessage(filterType)}/>
               }
             </div>
-          </div>
-        </div>
 
         <div className="w-[320px]">
           <div className="bg-white border border-slate-200 shadow-lg shadow-slate-200/60 rounded-lg">
-
+              <div className="p-3">
+                <DayPicker
+                captionLayout="dropdown-buttons"
+                mode="range"
+                selected={dateRange}
+                onSelect={handleDayClick}
+                pagedNavigation
+                />
+              </div>
           </div>
         </div>
       </div>
-
     </div>
 
     <Modal
