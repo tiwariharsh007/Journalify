@@ -37,3 +37,4 @@ chore: configure deployment settings
 fix: small bug in logout functionality
 feat: final polish before deployment
 initialize backend with Express setup
+setup MongoDB connection in utils/db.js
