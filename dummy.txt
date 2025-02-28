@@ -1,3 +1,4 @@
 feat: initialize backend with Express setup
 chore: setup MongoDB connection in utils/db.js
 feat: add user model and auth controller
+feat: create routes for signup and login
