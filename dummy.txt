@@ -3,3 +3,4 @@ chore: setup MongoDB connection in utils/db.js
 feat: add user model and auth controller
 feat: create routes for signup and login
 fix: resolve CORS error in backend config
+chore: add dotenv and configure environment variables
