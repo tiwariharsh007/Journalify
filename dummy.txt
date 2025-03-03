@@ -4,3 +4,4 @@ feat: add user model and auth controller
 feat: create routes for signup and login
 fix: resolve CORS error in backend config
 chore: add dotenv and configure environment variables
+feat: implement JWT authentication middleware
