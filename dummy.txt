@@ -41,3 +41,4 @@ setup MongoDB connection in utils/db.js
 add user model and authentication controller
 create routes for signup and login
 resolve CORS issue in backend config
+add dotenv and environment variables
