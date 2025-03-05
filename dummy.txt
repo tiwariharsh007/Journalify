@@ -6,3 +6,4 @@ fix: resolve CORS error in backend config
 chore: add dotenv and configure environment variables
 feat: implement JWT authentication middleware
 feat: add journal model and basic CRUD routes
+fix: bug in journal creation API response
