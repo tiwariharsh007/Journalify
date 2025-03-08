@@ -9,3 +9,4 @@ feat: add journal model and basic CRUD routes
 fix: bug in journal creation API response
 docs: update backend README with API usage
 feat: initialize frontend with Vite and Tailwind
+style: configure Tailwind base styles and themes
