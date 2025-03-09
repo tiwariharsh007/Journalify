@@ -46,3 +46,4 @@ setup frontend with Vite and Tailwind
 configure Tailwind base styles
 create login and signup forms
 connect forms to backend auth API
+fix validation issue in signup form
