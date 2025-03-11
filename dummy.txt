@@ -12,3 +12,4 @@ feat: initialize frontend with Vite and Tailwind
 style: configure Tailwind base styles and themes
 feat: create login and signup forms in frontend
 feat: connect frontend forms to backend auth API
+fix: input validation issue in signup form
