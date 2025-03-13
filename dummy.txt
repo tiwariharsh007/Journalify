@@ -14,3 +14,4 @@ feat: create login and signup forms in frontend
 feat: connect frontend forms to backend auth API
 fix: input validation issue in signup form
 feat: add navbar and basic routing in frontend
+feat: implement journal creation UI
