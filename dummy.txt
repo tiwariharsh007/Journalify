@@ -49,3 +49,4 @@ connect forms to backend auth API
 fix validation issue in signup form
 add navbar and routing in frontend
 implement journal creation UI
+update API request headers for journal submission
