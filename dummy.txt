@@ -18,3 +18,4 @@ feat: implement journal creation UI
 fix: API request headers for journal submission
 feat: display user journals in dashboard
 refactor: organize frontend components by feature
+style: improve responsive design for mobile
