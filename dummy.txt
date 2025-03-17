@@ -52,3 +52,4 @@ implement journal creation UI
 update API request headers for journal submission
 display user journals in dashboard
 organize frontend components by feature
+improve responsive design
