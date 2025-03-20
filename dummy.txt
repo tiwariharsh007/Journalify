@@ -21,3 +21,4 @@ refactor: organize frontend components by feature
 style: improve responsive design for mobile
 feat: add profile page with user details
 fix: avatar upload not saving correctly
+feat: integrate multer for image uploads
