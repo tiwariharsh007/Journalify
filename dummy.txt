@@ -22,3 +22,4 @@ style: improve responsive design for mobile
 feat: add profile page with user details
 fix: avatar upload not saving correctly
 feat: integrate multer for image uploads
+docs: update README with project setup steps
