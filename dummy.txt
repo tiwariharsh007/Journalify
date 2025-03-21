@@ -56,3 +56,4 @@ improve responsive design
 add profile page with user details
 fix avatar upload issue
 integrate multer for image uploads
+update project README with setup steps
