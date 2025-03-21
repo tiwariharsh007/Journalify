@@ -58,3 +58,4 @@ fix avatar upload issue
 integrate multer for image uploads
 update project README with setup steps
 implement search and filter for journals
+resolve pagination issue in journal listing
