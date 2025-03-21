@@ -54,3 +54,4 @@ display user journals in dashboard
 organize frontend components by feature
 improve responsive design
 add profile page with user details
+fix avatar upload issue
