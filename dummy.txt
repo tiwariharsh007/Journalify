@@ -60,3 +60,4 @@ update project README with setup steps
 implement search and filter for journals
 resolve pagination issue in journal listing
 cleanup unused frontend assets
+optimize backend controllers
