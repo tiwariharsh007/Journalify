@@ -27,3 +27,4 @@ feat: implement search and filter for journals
 fix: pagination issue in journal listing
 chore: cleanup unused frontend assets
 refactor: optimize backend controllers
+feat: secure journal routes with JWT verification
