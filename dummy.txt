@@ -28,3 +28,4 @@ fix: pagination issue in journal listing
 chore: cleanup unused frontend assets
 refactor: optimize backend controllers
 feat: secure journal routes with JWT verification
+fix: token expiration bug in middleware
