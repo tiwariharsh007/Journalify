@@ -31,3 +31,4 @@ feat: secure journal routes with JWT verification
 fix: token expiration bug in middleware
 style: update UI with better card layouts
 feat: add dark mode toggle
+perf: improve frontend rendering performance
