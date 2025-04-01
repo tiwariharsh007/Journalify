@@ -33,3 +33,4 @@ style: update UI with better card layouts
 feat: add dark mode toggle
 perf: improve frontend rendering performance
 docs: add screenshots to README
+chore: configure deployment settings
