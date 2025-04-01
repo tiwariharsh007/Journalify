@@ -65,3 +65,4 @@ secure journal routes with JWT verification
 fix token expiration bug in middleware
 update UI with improved card layouts
 add dark mode toggle
+configure deployment settings
