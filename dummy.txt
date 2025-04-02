@@ -67,3 +67,4 @@ update UI with improved card layouts
 add dark mode toggle
 configure deployment settings
 resolve bug in logout functionality
+add final polish before deployment
