@@ -71,3 +71,4 @@ add final polish before deployment
 improve frontend rendering performance
 add screenshots to README
 update styling for mobile
+final cleanup before release
