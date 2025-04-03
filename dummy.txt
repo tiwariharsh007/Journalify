@@ -70,3 +70,4 @@ resolve bug in logout functionality
 add final polish before deployment
 improve frontend rendering performance
 add screenshots to README
+update styling for mobile
