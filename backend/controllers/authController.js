@@ -1,6 +1,14 @@
+// backend/controllers/authController.js
 import bcrypt from 'bcrypt';
 import User from '../models/userSchema.js';
 import jwt from 'jsonwebtoken';
+
+// Helper to create JWT
+const createToken = (payload) => {
+  const secret = process.env.JWT_SECRET || 'defaultsecret';
+  // expires in 7 days, change as needed
+  return jwt.sign(payload, secret, { expiresIn: '7d' });
+};
 
 // Signup
 export const signup = async (req, res) => {
@@ -16,88 +24,83 @@ export const signup = async (req, res) => {
       return res.status(400).json({ error: true, message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    const { password: pass, ...rest } = newUser._doc;
+    const newUser = new User({
+      username,
+      email,
+      password: hashed
+    });
 
-    res
-      .cookie('access_token', token, { httpOnly: true })
-      .status(201)
-      .json({
-        user: rest,
-        accessToken: token,
-        message: "Registration successful",
-      });
-  } catch (error) {
-    return res.status(500).json({ error: true, message: "An error occurred during registration" });
+    const saved = await newUser.save();
+
+    // create token payload (store minimal info)
+    const token = createToken({ id: saved._id, email: saved.email });
+
+    // set cookie (httpOnly)
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    return res.status(201).json({ user: { id: saved._id, username: saved.username, email: saved.email }, message: 'User created', token });
+  } catch (err) {
+    console.error('Signup error:', err);
+    return res.status(500).json({ error: true, message: 'Server error during signup' });
   }
 };
 
-
-// signin 
-
+// Signin
 export const signin = async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) return res.status(400).json({ error: true, message: 'Email and password required' });
+
   try {
-    if (!email || !password) {
-      return res.status(400).json({ error: true, message: "All credentials are required" });
-    }
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ error: true, message: 'Invalid credentials' });
 
-    const validUser = await User.findOne({ email });
-    if (!validUser) {
-      return res.status(400).json({ error: true, message: "User not found." });
-    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ error: true, message: 'Invalid credentials' });
 
-    const validPassword = await bcrypt.compare(password, validUser.password);
-    if (!validPassword) {
-      return res.status(401).json({ error: true, message: "Wrong credentials." });
-    }
+    const token = createToken({ id: user._id, email: user.email });
 
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
 
-    const { password: pass, ...rest } = validUser._doc;
-
-    res
-      .cookie('access_token', token, { httpOnly: true })
-      .status(200)
-      .json({
-        user: rest,
-        accessToken: token,
-        message: "Logged in successfully",
-      });
-  } catch (error) {
-    return res.status(500).json({ error: true, message: "An error occurred during logging-in." });
+    return res.status(200).json({ user: { id: user._id, username: user.username, email: user.email }, message: 'Signed in', token });
+  } catch (err) {
+    console.error('Signin error:', err);
+    return res.status(500).json({ error: true, message: 'Server error during signin' });
   }
 };
 
+// Signout
+export const signout = (req, res) => {
+  res.clearCookie('access_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
+  });
+  return res.status(200).json({ message: 'Signed out' });
+};
 
-// sign-out 
-export const signout = (req, res, next) => {
-  try {
-      res.clearCookie('access_token');
-      res.status(200).json('User has been logged out!');
-    } catch (error) {
-      next(error);
-    }
-}
-
-// current user ka sara data 
-export const getuser = async(req, res) => {
+// get current user (verify middleware must have set req.userRef)
+export const getuser = async (req, res) => {
   try {
     const user = await User.findById(req.userRef.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ error: true, message: "User not found." });
-    }
+    if (!user) return res.status(404).json({ error: true, message: 'User not found' });
 
-    res.status(200).json({
-      user,
-      message: "User data retrieved successfully.",
-    });
+    return res.status(200).json({ user, message: 'User data retrieved successfully.' });
   } catch (error) {
-    return res.status(500).json({ error: true, message: "An error occurred while fetching user data." });
+    console.error('getuser error:', error);
+    return res.status(500).json({ error: true, message: 'Server error fetching user data.' });
   }
-}
+};
