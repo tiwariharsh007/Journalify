@@ -58,16 +58,35 @@
 
 ## 📂 Folder Structure
 
+```plaintext
 /Journalify
 │
 ├── /frontend
-│ ├── /components
-│ ├── /pages
-│ └── App.jsx
+│   ├── /node_modules
+│   ├── /public
+│   ├── /src
+│   │   ├── /components
+│   │   ├── /pages
+│   │   └── App.jsx
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── README.md
+│   └── vite.config.js
 │
 ├── /backend
-│ ├── /routes
-│ ├── /controllers
-│ └── server.js
+│   ├── /controllers
+│   ├── /models
+│   ├── /node_modules
+│   ├── /routes
+│   ├── /uploads
+│   ├── /utils
+│   ├── .env
+│   ├── index.js
+│   ├── package.json
+│   └── package-lock.json
 │
 └── README.md
+
