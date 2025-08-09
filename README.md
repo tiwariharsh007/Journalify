@@ -17,7 +17,6 @@
 
 ## 🖼️ Screenshots
 
-> _(Place your screenshots in the appropriate folder and adjust the paths below)_
 
 ### 🔐 Login Page
 
