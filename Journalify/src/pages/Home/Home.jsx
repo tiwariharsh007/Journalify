@@ -16,7 +16,7 @@ import { getEmptyCardMessage } from '../../utils/helper';
 
 const Home = () => {
   const navigate = useNavigate();
-  const [ userInfo, steUserInfo] = useState(null);
+  const [ userInfo, setUserInfo] = useState(null);
   const [allJournals, setAllJournals] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,26 +35,27 @@ const Home = () => {
     data : null,
   });
 
-  const getUserInfo = async() => {
-    try{
-      const response = await axios.get(`${BASE_API}/auth/me`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        }
-      );
-      if(response.data && response.data.user){
-        steUserInfo(response.data.user);
+  const getUserInfo = async () => {
+    try {
+      const response = await axios.get(`${BASE_API}/auth/me`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true, // sends the HTTP-only cookie
+      });
+  
+      if (response.data && response.data.user) {
+        setUserInfo(response.data.user);
       }
-    } catch(error){
-      if(error.response.status === 401){
-        localStorage.clear();
+    } catch (error) {
+      if (error.response?.status === 401) {
+        // No token or invalid token — redirect to login
         navigate("/login");
+      } else {
+        console.error("Error fetching user info:", error);
       }
     }
-  }
+  };
 
   const getAllJournals = async () => {
     try{
